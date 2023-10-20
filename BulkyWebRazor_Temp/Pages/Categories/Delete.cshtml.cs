@@ -8,7 +8,7 @@ namespace BulkyWebRazor_Temp.Pages.Categories
     public class DeleteModel : PageModel
     {
         private readonly AppDbContext _appDbContext;
-        [BindProperty] public Category Category { get; set; }
+        [BindProperty] public Category? Category { get; set; }
 
         public DeleteModel(AppDbContext appDbContext)
         {
@@ -16,19 +16,25 @@ namespace BulkyWebRazor_Temp.Pages.Categories
         }
 
 
-        public void OnGet(int id)
+        public void OnGet(int? id)
         {
-            Category = _appDbContext.Categories.Find(id);
+            if (id != null && id != 0)
+            {
+                Category = _appDbContext.Categories.Find(id)!;
+            }
         }
 
         public IActionResult OnPost()
         {
-            var obj = Category;
+            var obj = _appDbContext.Categories.Find(Category.Id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
 
             _appDbContext.Categories.Remove(obj);
             _appDbContext.SaveChanges();
-
-            return RedirectToPage("Index"); 
+            return RedirectToPage("Index");
         }
     }
 }
