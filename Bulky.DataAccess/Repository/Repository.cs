@@ -8,12 +8,12 @@ namespace Bulky.DataAccess.Repository;
 public class Repository<T> : IRepository<T> where T : class
 {
     internal DbSet<T> DbSet;
-    private readonly ApplicationDbContext _dbContext;
+    private readonly ApplicationDbContext _dbContextContext;
 
-    public Repository(ApplicationDbContext dbContext)
+    public Repository(ApplicationDbContext dbContextContext)
     {
-        _dbContext = dbContext;
-        DbSet = _dbContext.Set<T>();
+        _dbContextContext = dbContextContext;
+        DbSet = _dbContextContext.Set<T>();
     }
 
     public IEnumerable<T> GetAll()
