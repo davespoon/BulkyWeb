@@ -1,22 +1,24 @@
-﻿using Bulky.DataAccess.Repository.IRepository;
+﻿using Bulky.DataAccess.Data;
+using Bulky.DataAccess.Repository.IRepository;
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyWeb.Areas.Admin.Controllers;
 
 [Area("Admin")]
-public class CategoryController : Controller
+public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public CategoryController(IUnitOfWork unitOfWork)
+
+    public ProductController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
 
     public IActionResult Index()
     {
-        var objCategoryList = _unitOfWork.Category.GetAll().ToList();
+        var objCategoryList = _unitOfWork.Product.GetAll().ToList();
         return View(objCategoryList);
     }
 
@@ -26,19 +28,14 @@ public class CategoryController : Controller
     }
 
     [HttpPost]
-    public IActionResult Create([FromForm] Category obj)
+    public IActionResult Create([FromForm] Product obj)
     {
-        if (obj.Name == "Bob")
-        {
-            ModelState.AddModelError("name", "The name could not be Bob. I don't like it. Sorry Bob!");
-        }
-
         if (ModelState.IsValid)
         {
-            _unitOfWork.Category.Add(obj);
+            _unitOfWork.Product.Add(obj);
             _unitOfWork.Save();
 
-            TempData["Success"] = "Category created!";
+            TempData["Success"] = "Product created!";
             return RedirectToAction("Index");
         }
 
@@ -52,37 +49,31 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        Category fromDb = _unitOfWork.Category.Get(category => category.Id == id);
+        Product fromDb = _unitOfWork.Product.Get(p => p.Id == id);
 
         if (fromDb == null)
         {
             return NotFound();
         }
 
-        // var obj = _db.Categories.FirstOrDefault(category => category.Id == id);
 
         return View(fromDb);
     }
 
     [HttpPost]
-    public IActionResult Edit(Category obj)
+    public IActionResult Edit(Product obj)
     {
-        if (obj.Name == "Bob")
-        {
-            ModelState.AddModelError("name", "The name could not be Bob. I don't like it. Sorry Bob!");
-        }
-
         if (ModelState.IsValid)
         {
-            _unitOfWork.Category.Update(obj);
+            _unitOfWork.Product.Update(obj);
             _unitOfWork.Save();
-            TempData["Success"] = "Category Updated!";
+            TempData["Success"] = "Product Updated!";
             return RedirectToAction("Index");
         }
 
         return View(obj);
     }
-
+    
     public IActionResult Delete(int id)
     {
         if (id == null || id == 0)
@@ -90,8 +81,8 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        Category fromDb = _unitOfWork.Category.Get(category => category.Id == id);
-        ;
+        Product fromDb = _unitOfWork.Product.Get(p => p.Id == id);
+       
 
         if (fromDb == null)
         {
@@ -109,17 +100,18 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        Category fromDb = _unitOfWork.Category.Get(category => category.Id == id);
+        Product fromDb = _unitOfWork.Product.Get(p => p.Id == id);
+        ;
 
         if (fromDb == null)
         {
             return NotFound();
         }
 
-        _unitOfWork.Category.Remove(fromDb);
+        _unitOfWork.Product.Remove(fromDb);
         _unitOfWork.Save();
 
-        TempData["Success"] = "Category Deleted!";
+        TempData["Success"] = "Product Deleted!";
 
         return RedirectToAction("Index");
     }
